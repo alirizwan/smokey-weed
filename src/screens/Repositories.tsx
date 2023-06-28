@@ -1,10 +1,14 @@
 import * as React from 'react';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
+import useAxios from 'axios-hooks';
+
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
+
+import { API_ENDPOINTS } from '../utils/appCostants';
 
 export default function Repositories() {
+
+  const [{ data, loading }, searchRepositories] = useAxios(API_ENDPOINTS.SEARCH_REPOSIORIES);
+
   return (
     <Box>
     </Box>
