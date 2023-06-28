@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Route } from "react-router";
+import { BrowserRouter, Routes } from 'react-router-dom';
 import { configure } from 'axios-hooks';
 
-import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 
 import { client as axios } from './utils/apiClient';
 
@@ -24,7 +25,7 @@ export default function App() {
       <Container maxWidth={false}>
         <BrowserRouter>
           <Routes>
-            {routerConfig.map((route: TRoute) => <Route path={route.path} element={<route.element />} />)}
+            {routerConfig.map((route: TRoute) => <Route key={route.path} path={route.path} element={<route.element />} />)}
           </Routes>
         </BrowserRouter>
 
