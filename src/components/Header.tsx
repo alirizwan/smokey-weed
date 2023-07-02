@@ -6,11 +6,11 @@ import Typography from '@mui/material/Typography';
 export default function Header() {
   return (
     <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Repositories
-          </Typography>
-        </Toolbar>
-      </AppBar>
+      <Toolbar>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          Repositories
+        </Typography>
+      </Toolbar>
+    </AppBar>
   );
 }
