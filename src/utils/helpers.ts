@@ -15,7 +15,6 @@ export function transformRepositories(data: TRepositoriesResponse): TRepositorie
       stars: item.stargazers_count,
       owner: {
         login: item.owner.login,
-        htmlUrl: item.owner.html_url,
         avatarUrl: item.owner.avatar_url
       }
     }))

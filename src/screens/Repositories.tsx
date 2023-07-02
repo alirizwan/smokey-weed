@@ -18,6 +18,7 @@ import { API_ENDPOINTS, REPOSITORIES_PER_PAGE } from '../utils/appCostants';
 import { TRepositories, TRepositoriesResponse, TRepository, TSearchParams } from '../types';
 
 import { transformRepositories } from '../utils/helpers';
+import { getFavorites } from '../utils/repositoryActions';
 
 const LoadMoreButton = styled((props: LoadingButtonProps) => {
   return <LoadingButton {...props} />;
@@ -40,19 +41,24 @@ export default function Repositories() {
 
   const [params, setParams] = useState<TSearchParams>(defaultParams);
 
-  const [{ data, loading, error }] = useAxios<TRepositoriesResponse>({
+  const [{ data, loading, error }, searchRepositories] = useAxios<TRepositoriesResponse>({
     ...API_ENDPOINTS.SEARCH_REPOSIORIES,
     params
   });
 
   useEffect(() => {
 
-    if (!loading && data && !error) {
-      const refineData: TRepositories = transformRepositories(data);
+    if (repoFilter === 'fav') {
+      setRepositories(getFavorites());
+    } else {
+      if (!loading && data && !error) {
+        const refineData: TRepositories = transformRepositories(data);
+  
+        setRepositories(repositories.concat(refineData.items));
+      };
+    }
 
-      setRepositories(repositories.concat(refineData.items));
-    };
-  }, [loading, data, error]);
+  }, [loading, data, error, getFavorites]);
 
   const handleLoadMore = () => {
     const newParams = { ...params, page: params.page + 1 };
@@ -60,10 +66,22 @@ export default function Repositories() {
     setParams(newParams);
   };
 
-  const handleFilter = (event: React.MouseEvent<HTMLElement>, newValue: ScrollSetting) => {
+  const handleFilter = (newValue: string) => {
+    if (!newValue) return;
+  
     setRepoFilter(newValue);
-    setRepositories([]);
-    setParams(defaultParams);
+
+    if (newValue === 'fav') {
+      setRepositories(getFavorites());
+    } else {
+      setRepositories([]);
+      setParams(defaultParams);
+      searchRepositories();
+    }
+  }
+
+  const handleFavChange = () => {
+    if (repoFilter === 'fav') handleFilter('fav');
   }
 
   return (
@@ -73,17 +91,17 @@ export default function Repositories() {
         value={repoFilter}
         exclusive
         aria-label="Filter"
-        onChange={handleFilter}
+        onChange={(event: React.MouseEvent<HTMLElement>, newValue: string) => handleFilter(newValue)}
       >
         <ToggleButton value="all">All Repositories</ToggleButton>
         <ToggleButton value="fav">Fav Repositories</ToggleButton>
       </ToggleButtonGroup>
       <Grid container spacing={2}>
         {
-          repositories.map((item: TRepository) => (<Repository repository={item} key={item.id} />))
+          repositories.map((item: TRepository) => (<Repository repository={item} key={item.fullName} onFavChange={handleFavChange} />))
         }
       </Grid>
-      {data?.items.length && <LoadMoreButton loading={loading} variant='outlined' onClick={() => handleLoadMore()}>Load More</LoadMoreButton>}
+      {data?.items.length && repoFilter === 'all' && <LoadMoreButton loading={loading} variant='outlined' onClick={() => handleLoadMore()}>Load More</LoadMoreButton>}
     </Stack>
   );
 }

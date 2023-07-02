@@ -1,3 +1,4 @@
+import { TRepository } from '../types';
 import { LOCAL_STORAGE_KEY } from './appCostants';
 
 function getLocalData () {
@@ -5,14 +6,14 @@ function getLocalData () {
   return rawData ? JSON.parse(rawData) : {};
 }
 
-export function toggleFavorite (key: string, favorite: boolean) {
+export function toggleFavorite (repository: TRepository, favorite: boolean) {
   
   const exisitingData = getLocalData();
 
   if (favorite)
-    exisitingData[key] = true;
+    exisitingData[repository.fullName] = repository;
   else
-    delete exisitingData[key];
+    delete exisitingData[repository.fullName];
 
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(exisitingData));
 }
@@ -23,10 +24,10 @@ export function isFavorite (key: string): boolean {
   return !!exisitingData[key];
 }
 
-export function getFavorite (): string[] {
+export function getFavorites (): TRepository[] {
   const exisitingData = getLocalData();
 
-  return Object.keys(exisitingData);
+  return Object.keys(exisitingData).map((name: string) => exisitingData[name]);
 }
 
 export const clearLocalStorage = () => {

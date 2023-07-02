@@ -1,11 +1,9 @@
 export type TOwnerResponse = {
   login: string;
-  html_url: string;
   avatar_url: string;
 };
 
 export type TOwner = {
-  htmlUrl: string;
   avatarUrl: string;
   login: string;
 }

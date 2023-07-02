@@ -14,6 +14,7 @@ import Grid from '@mui/material/Grid';
 import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ForkLeftIcon from '@mui/icons-material/ForkLeft';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -25,6 +26,7 @@ import { TRepository } from '../types';
 
 type TRepositoryProps = {
   repository: TRepository;
+  onFavChange: Function;
 }
 
 const OpenNew = styled((props: IconButtonProps) => {
@@ -33,9 +35,9 @@ const OpenNew = styled((props: IconButtonProps) => {
   marginLeft: 'auto'
 }));
 
-export default function Repository({ repository }: TRepositoryProps) {
+export default function Repository({ repository, onFavChange }: TRepositoryProps) {
 
-  const [favorite, setFavorite] = useState<boolean>(isFavorite(repository.name));
+  const [favorite, setFavorite] = useState<boolean>(isFavorite(repository.fullName));
 
   const handleOpenNew = (url: string) => {
     window.open(url, '_blank')
@@ -43,12 +45,14 @@ export default function Repository({ repository }: TRepositoryProps) {
 
   const handleFavorite = () => {
     if (favorite) {
-      toggleFavorite(repository.name, false);
+      toggleFavorite(repository, false);
       setFavorite(false);
     } else {
-      toggleFavorite(repository.name, true);
+      toggleFavorite(repository, true);
       setFavorite(true);
     }
+
+    onFavChange();
   };
 
   return (
