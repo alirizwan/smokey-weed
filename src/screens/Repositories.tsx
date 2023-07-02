@@ -12,6 +12,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import Repository from '../components/Repository';
+import SearchBar from '../components/SearchBar';
 
 import { API_ENDPOINTS, REPOSITORIES_PER_PAGE } from '../utils/appCostants';
 
@@ -34,6 +35,8 @@ const defaultParams: TSearchParams = {
   page: 1
 };
 
+let delayDebounceFn: any = null;
+
 export default function Repositories() {
 
   const [repoFilter, setRepoFilter] = useState<string>('all');
@@ -53,12 +56,13 @@ export default function Repositories() {
     } else {
       if (!loading && data && !error) {
         const refineData: TRepositories = transformRepositories(data);
-  
+
         setRepositories(repositories.concat(refineData.items));
       };
     }
 
   }, [loading, data, error, getFavorites]);
+
 
   const handleLoadMore = () => {
     const newParams = { ...params, page: params.page + 1 };
@@ -66,17 +70,22 @@ export default function Repositories() {
     setParams(newParams);
   };
 
-  const handleFilter = (newValue: string) => {
+  const handleFilter = async (newValue: string) => {
     if (!newValue) return;
-  
+
     setRepoFilter(newValue);
 
     if (newValue === 'fav') {
       setRepositories(getFavorites());
     } else {
       setRepositories([]);
-      setParams(defaultParams);
-      searchRepositories();
+      try {
+        await searchRepositories();
+      } catch (err) {
+        // for now ignoring this error.
+        //todo: Show a popup and handle possible or rate limits
+        console.log(err);
+      }
     }
   }
 
@@ -84,18 +93,32 @@ export default function Repositories() {
     if (repoFilter === 'fav') handleFilter('fav');
   }
 
+  const onLanguageChange = (value: string) => {
+    const languageFilter = value.length ? ` and language:${value}` : '';
+
+    setRepositories([]);
+    setParams({
+      ...defaultParams,
+      q: `${defaultParams.q}${languageFilter}`
+    });
+    
+  }
+
   return (
-    <Stack spacing={2} justifyContent='center' alignItems='center' style={{marginTop: '20px'}}>
+    <Stack spacing={2} justifyContent='center' alignItems='center' style={{ marginTop: '20px' }}>
       <ToggleButtonGroup
-        color="primary"
+        color='primary'
         value={repoFilter}
         exclusive
-        aria-label="Filter"
+        aria-label='Filter'
         onChange={(event: React.MouseEvent<HTMLElement>, newValue: string) => handleFilter(newValue)}
       >
-        <ToggleButton value="all">All Repositories</ToggleButton>
-        <ToggleButton value="fav">Fav Repositories</ToggleButton>
+        <ToggleButton value='all'>All Repositories</ToggleButton>
+        <ToggleButton value='fav'>Fav Repositories</ToggleButton>
       </ToggleButtonGroup>
+      {
+        repoFilter === 'all' && <SearchBar onChange={(value: string) => onLanguageChange(value)} />
+      }
       <Grid container spacing={2}>
         {
           repositories.map((item: TRepository) => (<Repository repository={item} key={item.fullName} onFavChange={handleFavChange} />))

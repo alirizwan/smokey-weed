@@ -76,6 +76,7 @@ export default function Repository({ repository, onFavChange }: TRepositoryProps
               <Chip icon={<StarBorderIcon />} label={repository.stars} variant="outlined" size="small" />
               <Chip icon={<ForkLeftIcon />} label={repository.forks} variant="outlined" size="small" />
               <Chip icon={<VisibilityIcon />} label={repository.watchers} variant="outlined" size="small" />
+              { repository.language && <Chip label={repository.language} variant="outlined" size="small" /> }
             </Stack>
           </Stack>
         </CardContent>
