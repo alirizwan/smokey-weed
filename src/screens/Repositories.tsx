@@ -28,14 +28,12 @@ const LoadMoreButton = styled((props: LoadingButtonProps) => {
 }));
 
 const defaultParams: TSearchParams = {
-  q: `created:>${dayjs().subtract(1, 'days').format('YYYY-MM-DD')}`,
+  q: `created:>${dayjs().subtract(7, 'days').format('YYYY-MM-DD')}`,
   sort: 'stars',
   order: 'desc',
   per_page: REPOSITORIES_PER_PAGE,
   page: 1
 };
-
-let delayDebounceFn: any = null;
 
 export default function Repositories() {
 
@@ -55,6 +53,7 @@ export default function Repositories() {
       setRepositories(getFavorites());
     } else {
       if (!loading && data && !error) {
+        // Transformation is being done to keep the data within app sane and of one notation instead of mixing camel and snake case.
         const refineData: TRepositories = transformRepositories(data);
 
         setRepositories(repositories.concat(refineData.items));
@@ -65,6 +64,7 @@ export default function Repositories() {
 
 
   const handleLoadMore = () => {
+    // axios hook automatically refetches the data when we make a change to params.
     const newParams = { ...params, page: params.page + 1 };
 
     setParams(newParams);

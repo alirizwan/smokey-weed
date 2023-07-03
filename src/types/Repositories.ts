@@ -14,7 +14,6 @@ export type TRepositoryResponse = {
   full_name: string;
   html_url: string;
   description: string;
-  url: string;
   forks: number;
   watchers: number;
   stargazers_count: number;
@@ -29,7 +28,7 @@ export type TRepositoriesResponse = {
   items: TRepositoryResponse[];
 };
 
-export type TRepository = Omit<TRepositoryResponse, 'full_name' | 'html_url' | 'owner'> & { 
+export type TRepository = Omit<TRepositoryResponse, 'full_name' | 'html_url' | 'owner' | 'stargazers_count'> & {
   fullName: string;
   htmlUrl: string;
   stars: number;

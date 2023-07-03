@@ -56,7 +56,7 @@ export default function Repository({ repository, onFavChange }: TRepositoryProps
   };
 
   return (
-    <Grid item xs={12} sm={6} md={4} xl={3}>
+    <Grid item xs={12} sm={6} md={4} xl={3} className='repository'>
       <Card variant="outlined">
         <CardHeader
           avatar={
