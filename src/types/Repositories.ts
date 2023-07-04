@@ -28,9 +28,15 @@ export type TRepositoriesResponse = {
   items: TRepositoryResponse[];
 };
 
-export type TRepository = Omit<TRepositoryResponse, 'full_name' | 'html_url' | 'owner' | 'stargazers_count'> & {
+export type TRepository = {
+  id: number;
+  name: string;
   fullName: string;
   htmlUrl: string;
+  description: string;
+  forks: number;
+  watchers: number;
+  language: string;
   stars: number;
   owner: TOwner;
   createdAt: string;

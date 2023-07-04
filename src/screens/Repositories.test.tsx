@@ -27,7 +27,7 @@ const fakeResponse = [{
 
 const fakeRepository: TRepository = {
   id: 659510798,
-  name: "test",
+  name: "Test",
   fullName: "slarkvan/test",
   owner: {
     login: "slarkvan",
@@ -40,7 +40,7 @@ const fakeRepository: TRepository = {
   language: "JavaScript",
   forks: 240,
   watchers: 562,
-}
+};
 
 describe('<Repositories />', () => {
 
